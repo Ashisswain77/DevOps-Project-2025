@@ -1,0 +1,23 @@
+{
+  "name": "codepipeline-using-terraform-main",
+  "version": "1.0.0",
+  "description": "- AWS CLI configured (`aws configure`) - Terraform installed (v1.3+ recommended) - GitHub repo for your application (see [this repo](https://github.com/yourusername/terraform-project-task-1)) - The repo must contain: - ✅ [`buildspec.yml`](examples/buildspec.yml) — Defines the build and artifact steps - ✅ [`appspec.yml`](examples/appspec.yml) — Required by CodeDeploy - ✅ [`scripts/install.sh`](examples/scripts/install.sh) — Installs dependencies on EC2 - ✅ [`scripts/start.sh`](examples/scripts/start.sh) — Starts the React app (e.g. `serve -s build`)",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo \"No actual build step yet\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Murari17/devopsassg1.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Murari17/devopsassg1/issues"
+  },
+  "homepage": "https://github.com/Murari17/devopsassg1#readme"
+}
