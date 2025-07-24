@@ -1,229 +1,230 @@
-# 🛠️ DevOps Masters 2025: CI/CD Pipeline with AWS, GitHub Actions & Sealed Secrets
+🚀 Secure CI/CD with AWS, GitHub Actions & Sealed Secrets | DevOps 2025 Project
+This project demonstrates how to set up a production-grade CI/CD pipeline using Terraform and AWS CodePipeline, with built-in DevSecOps practices powered by GitHub Actions. It deploys application updates to an EC2 instance securely, runs security validations (tfsec & Trivy), and uses Kubernetes Sealed Secrets for encrypted secret management.
 
-This project builds a secure and automated CI/CD system leveraging **Terraform and AWS services**, enhanced with modern **DevSecOps** practices through GitHub Actions. It sets up a complete AWS CodePipeline flow (source → build → deploy to EC2), infrastructure validation via Terratest, and secret handling via **Kubernetes Sealed Secrets**. Each code push triggers validations, security checks, and deployment.
+🏗️ Architecture Overview
+End-to-end automation pipeline:
 
----
+Source: GitHub Repository
 
-## 🧱 Architecture Summary
+Build: AWS CodeBuild with buildspec.yml
 
-A full-stack CI/CD setup using GitHub, CodePipeline, CodeBuild, CodeDeploy, and Kubernetes secret management via Sealed Secrets.
+Deploy: AWS CodeDeploy with appspec.yml and shell scripts
 
-## 🔗 GitHub Repository
-https://github.com/<your-username>/devops-2025-project
+Validation: tfsec + Trivy + Terratest
 
----
+Secrets: Kubernetes Sealed Secrets
 
-## ✨ Highlights
+📦 Tech Stack
+Category	Tools Used
+Infrastructure as Code	Terraform, Terratest
+Cloud Platform	AWS (EC2, CodePipeline, CodeBuild, IAM, S3, CodeDeploy)
+CI/CD	GitHub Actions
+Security	tfsec, Trivy
+Secrets	Bitnami Sealed Secrets for Kubernetes
+Languages	Go, Shell, YAML
 
-- 🔧 **Terraform-Powered Infrastructure**: Deploys AWS CodePipeline with stages for GitHub source, CodeBuild, and EC2 deployment
-- 🌀 **CI/CD Workflows via GitHub Actions**
-- 🛡️ **Security Integration**: `tfsec` for IaC scanning and `Trivy` for Docker image scanning
-- 🗝️ **Encrypted Secrets Handling**: Managed through Kubernetes Sealed Secrets
-- 🧪 **Test Coverage**: Terraform modules tested with Terratest
-- ☁️ **Cloud-Native EC2 & Kubernetes Support**
-- 🔐 **Managed IAM & S3 Configurations**
+🔰 Prerequisites
+AWS CLI configured: aws configure
 
----
+Terraform installed (v1.3+)
 
-## 🖥️ Technology Stack
+GitHub Personal Access Token (PAT)
 
-| Component         | Tools Used |
-|------------------|-------------|
-| Infrastructure   | Terraform, Terratest |
-| Cloud Platform   | AWS (EC2, CodePipeline, CodeBuild, CodeDeploy, IAM, S3) |
-| Security Tools   | tfsec, Trivy |
-| Secret Storage   | Kubernetes Sealed Secrets |
-| CI/CD Orchestration | GitHub Actions |
-| Runtime & Deployment | Docker, Kubernetes |
-| Programming      | Go (Terratest), YAML |
+Existing EC2 key pair and proper IAM roles
 
----
+Git installed
 
-## 🚀 Getting Started
+Docker (for Trivy and app container)
 
-### 1. Clone the Repo
-```bash
-git clone https://github.com/<your-username>/devops-2025-project.git
+📁 Folder Structure
+bash
+Copy
+Edit
+devops-2025-project/
+├── .github/workflows/
+│   └── devsecops-pipeline.yml
+├── terraform/
+│   ├── main.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+├── scripts/
+│   ├── install.sh
+├── examples/
+│   ├── appspec.yml
+│   ├── buildspec.yml
+│   └── scripts/
+│       └── install.sh
+├── k8s/
+│   ├── manifests/
+│   │   └── deployment.yaml
+│   └── secrets/
+│       └── sealed-secret.yaml
+├── test/
+│   └── terraform_pipeline_test.go
+├── README.md
+├── .gitignore
+├── terraform.tfvars
+🧪 Setup Instructions
+1. Clone the Project
+bash
+Copy
+Edit
+git clone https://github.com/Ashisswain77/devops-2025-project.git
 cd devops-2025-project
-```
+2. Create terraform.tfvars
+Create a file terraform.tfvars in the root and add:
 
-### 2. Configure AWS CLI
-```bash
-aws configure
-```
-
-### 3. Create terraform.tfvars File
-```hcl
-project_name       = "SecureCICDApp"
+hcl
+Copy
+Edit
+project_name       = "SecureCIProject"
 bucket_name        = "ashis-artifact-bucket"
 aws_region         = "ap-south-1"
-ami_id             = "ami-0abcdef1234567890"
+ami_id             = "ami-00c8ac9147e19828e"
 instance_type      = "t3.micro"
 key_name           = "ashis-key"
-github_owner       = "ashis-dev"
+github_owner       = "Ashisswain77"
 github_repo        = "devops-2025-project"
 github_branch      = "main"
-github_token       = "<YOUR_GITHUB_PAT>"
+github_token       = "<your-github-token>"
 instance_tag_key   = "Name"
-instance_tag_value = "CICDServer"
-```
+instance_tag_value = "AppServer"
+📛 Note: Make sure .gitignore contains:
 
-### 4. Provision Infrastructure
-```bash
+Copy
+Edit
+terraform.tfvars
+3. Deploy Infra with Terraform
+bash
+Copy
+Edit
 terraform init
 terraform plan
 terraform apply --auto-approve
-```
+✅ Task 1: AWS Pipeline Provisioning
+What’s provisioned:
 
----
+CodePipeline (GitHub → Build → Deploy to EC2)
 
-## 📌 Task Overview
+S3 for artifact storage
 
-### 🔹 Task 1: AWS Pipeline with Terraform
-- Sets up CodePipeline (GitHub → CodeBuild → CodeDeploy)
-- Manages IAM and S3
-- Validates resources with Terratest
+IAM roles for EC2, CodeBuild, CodeDeploy
 
-### 🔹 Task 2: GitHub Actions + DevSecOps
-- Terraform linting and validation via tfsec
-- Docker scan with Trivy
-- Secure secrets via `kubeseal`
-- Deployment to Kubernetes on push
+EC2 instance with required tags and access
 
----
+You need:
 
-## 🧪 Infrastructure Testing
+buildspec.yml
 
-Structure:
-```
-project/
-├── terraform/
-├── test/
-│   └── terraform_test.go
-```
+appspec.yml
 
-Sample Test Code:
-```go
-func TestPipelineInfra(t *testing.T) {
-  tf := &terraform.Options{ TerraformDir: "../terraform" }
-  defer terraform.Destroy(t, tf)
-  terraform.InitAndApply(t, tf)
-  output := terraform.Output(t, tf, "codepipeline_name")
-  assert.NotEmpty(t, output)
-}
-```
+scripts/install.sh & scripts/start.sh
 
-Define Terraform Output:
-```hcl
-output "codepipeline_name" {
-  value = aws_codepipeline.app_pipeline.name
-}
-```
+✅ Task 2: GitHub Actions with DevSecOps
+File: .github/workflows/devsecops-pipeline.yml
 
-Run Test:
-```bash
-go test ./test
-```
+Includes:
 
----
+tfsec scanning of Terraform code
 
-## 🔁 GitHub Actions Workflow Example
+Docker build & Trivy scan
 
-**.github/workflows/devsecops.yml**
-```yaml
-name: DevSecOps Pipeline
+Auto deployment to Kubernetes with decrypted Sealed Secrets
+
+Sample:
+
+yaml
+Copy
+Edit
+name: DevSecOps CI/CD
 
 on:
   push:
     branches: [main]
 
 jobs:
-  tfsec_scan:
+  tf-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: aquasecurity/tfsec-action@v1.0.0
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
 
-  docker_scan:
-    needs: tfsec_scan
+  trivy-scan:
+    needs: tf-check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: docker build -t app:latest .
-      - run: trivy image app:latest
+      - run: docker build -t myapp .
+      - run: trivy image myapp
+🛡️ Sealed Secrets (Kubernetes)
+Create a secret:
 
-  deploy:
-    needs: docker_scan
-    runs-on: ubuntu-latest
-    steps:
-      - run: terraform apply -auto-approve
-      - run: kubectl apply -f k8s/secrets/sealed-secret.yaml
-      - run: kubectl apply -f k8s/manifests/
-```
+bash
+Copy
+Edit
+kubectl create secret generic db-creds \
+  --from-literal=username=admin \
+  --from-literal=password=pass123 \
+  --dry-run=client -o yaml > secret.yaml
+Seal it:
 
----
-
-## 🔒 Kubernetes Secrets with Sealed Secrets
-
-Seal your secrets:
-```bash
-kubectl create secret generic db-creds --from-literal=username=admin --from-literal=password=1234 --dry-run=client -o yaml > secret.yaml
+bash
+Copy
+Edit
 kubeseal --cert pub-cert.pem -o yaml < secret.yaml > sealed-secret.yaml
-```
+Reference in deployment.yaml:
 
-Reference secrets in deployment:
-```yaml
+yaml
+Copy
+Edit
 env:
   - name: DB_USER
     valueFrom:
       secretKeyRef:
         name: db-creds
         key: username
-```
+🧪 Terratest Infrastructure Testing
+Setup:
 
----
+bash
+Copy
+Edit
+go mod init testinfra
+go get github.com/gruntwork-io/terratest/modules/terraform
+Test File (test/terraform_pipeline_test.go)
 
-## 📁 Project Layout
-```
-project/
-├── .github/workflows/devsecops.yml
-├── terraform/*.tf
-├── k8s/
-│   ├── manifests/deployment.yaml
-│   └── secrets/sealed-secret.yaml
-├── test/terraform_test.go
-├── buildspec.yml
-├── appspec.yml
-├── scripts/install.sh
-├── scripts/start.sh
-```
+go
+Copy
+Edit
+func TestInfra(t *testing.T) {
+  tf := &terraform.Options{TerraformDir: "../terraform"}
+  defer terraform.Destroy(t, tf)
+  terraform.InitAndApply(t, tf)
+  output := terraform.Output(t, tf, "codepipeline_name")
+  assert.NotEmpty(t, output)
+}
+Run:
 
----
+bash
+Copy
+Edit
+go test ./test
+🧠 Common Errors & Fixes
+Problem	Solution
+Source stage fails	Check GitHub token, repo name, and branch
+EC2 app not running	Verify user_data, check logs, and CodeDeploy agent
+S3 access denied	IAM role for EC2 must allow s3:GetObject
 
-## 🧠 Troubleshooting
-| Issue | Resolution |
-|-------|------------|
-| CodeDeploy health errors | Ensure EC2 instance role allows s3:GetObject |
-| Agent not running | Start CodeDeploy agent manually |
-| Source stage fails | Check GitHub token, repo, and branch |
-| Build issues | Validate `buildspec.yml` and supporting scripts |
+🔮 Future Enhancements
+🔁 Blue/Green deployments with traffic shifting
 
----
+📈 Add Prometheus & Grafana monitoring
 
-## 📈 Roadmap
-- 🔄 Blue/Green deployment support
-- 📊 Monitoring dashboards
-- 🔐 AWS Secrets Manager support
-- 🌐 Multi-region failover design
+🔐 Migrate secrets to AWS Secrets Manager
 
----
+🔄 Multi-region deployments
 
-## 🪪 License
-MIT License
-
----
-
-## 👤 Maintainer
-**Ashis Swain**  
-GitHub: [@ashisswain](https://github.com/Ashisswain77)  
+👤 Author
+Ashis Swain
+GitHub: @Ashisswain77
 Email: ashisswainofficial77@gmail.com
